@@ -20,15 +20,12 @@
         </ul>
       </div>
     </nav>
+
+  <Home />
+
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-const users = ref(null);
-
-fetch('http://localhost:8000/users/')
-    .then(response => response.json())
-    .then(data => users.value = data);
+  import Home from './views/Home.vue'
 </script>
 
