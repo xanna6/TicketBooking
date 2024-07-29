@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 
 from Tickets.models import User, Movie
 from Tickets.serializers import UserSerializer, MovieSerializer
@@ -12,6 +12,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title']
 
 
 

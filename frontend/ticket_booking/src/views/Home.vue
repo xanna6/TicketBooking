@@ -14,14 +14,15 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
-const movies = ref(null);
-
-fetch('http://localhost:8000/movies/')
-    .then(response => response.json())
-    .then(data => (movies.value = data));
+<script>
+export default {
+  props: {
+    movies: {
+      type: Array,
+      required: true
+    }
+  }
+};
 </script>
 
 <style>
