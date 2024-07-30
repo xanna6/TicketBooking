@@ -7,7 +7,9 @@
           <img class="poster" :src="movie.image_path" alt="movie poster">
         </div>
         <div class="col-9">
-          <a href="#" ><span class="movie-title">{{ movie.title }}</span></a>
+          <router-link :to="{ name: 'MovieDetails', params: { id: movie.id } }">
+            <span class="movie-title">{{ movie.title }}</span>
+          </router-link>
         </div>
       </div>
     </div>
@@ -49,6 +51,7 @@ export default {
 }
 .movie-list {
   padding: 30px 0;
-  border-bottom: inset;
+  border-bottom: solid;
+  border-color: lightgray;
 }
 </style>
