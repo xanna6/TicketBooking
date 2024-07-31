@@ -7,9 +7,16 @@
           <img class="poster" :src="movie.image_path" alt="movie poster">
         </div>
         <div class="col-9">
-          <router-link :to="{ name: 'MovieDetails', params: { id: movie.id } }">
+          <div id="movie-title">
+            <router-link :to="{ name: 'MovieDetails', params: { id: movie.id } }">
             <span class="movie-title">{{ movie.title }}</span>
           </router-link>
+          </div>
+          <div id="screenings">
+            <div id="screening" v-for="screening in movie.screenings" v-bind:key="screening.hall_screening_time.id">
+              <button class="btn btn-secondary btn-screening">{{ screening.hall_screening_time.time }}</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -53,5 +60,24 @@ export default {
   padding: 30px 0;
   border-bottom: solid;
   border-color: lightgray;
+}
+#screenings {
+  margin-top: 130px;
+}
+#screening {
+  display: inline;
+  margin-right: 20px;
+}
+.btn-secondary {
+  background-color: darkorange;
+  border-color: darkorange;
+}
+.btn-secondary:hover {
+  background-color: orangered;
+  border-color: orangered;
+}
+.btn-secondary:active {
+  background-color: red !important;
+  border-color: red !important;
 }
 </style>
