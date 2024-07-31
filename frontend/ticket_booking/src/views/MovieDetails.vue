@@ -1,4 +1,7 @@
 <template>
+  <a @click="$router.go(-1)">
+    <button class="btn btn-outline-dark btn-back" type="submit"><i class="bi bi-chevron-left"></i> Back</button>
+  </a>
   <div v-if="movie" class="container">
     <div class="shadow-sm p-3 mb-5 bg-white rounded">
       <h2>{{ movie.title }}</h2>
@@ -54,5 +57,9 @@ body {
 .movie-details-poster {
   width: 300px;
   height: 400px;
+}
+.btn-back {
+  margin-top: 30px;
+  margin-left: 100px;
 }
 </style>
