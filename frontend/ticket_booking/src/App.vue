@@ -21,16 +21,14 @@
       </div>
     </nav>
 
-  <Home :movies="movies"/>
+  <router-view :movies="movies"/>
 
 </template>
 
 <script>
 import {onMounted, ref} from 'vue';
-import Home from "./views/Home.vue";
 
 export default {
-  components: {Home},
   setup() {
     const searchQuery = ref('');
     const movies = ref([]);
