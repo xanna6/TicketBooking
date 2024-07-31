@@ -14,6 +14,3 @@ class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['title']
-
-
-
