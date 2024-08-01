@@ -12,7 +12,7 @@
             <span class="movie-title">{{ movie.title }}</span>
           </router-link>
           </div>
-          <div id="screenings">
+          <div class="screenings">
             <div id="screening" v-for="screening in movie.screenings" v-bind:key="screening.hall_screening_time.id">
               <button class="btn btn-secondary btn-screening">{{ screening.hall_screening_time.time }}</button>
             </div>
@@ -61,22 +61,23 @@ export default {
   border-bottom: solid;
   border-color: lightgray;
 }
-#screenings {
-  margin-top: 130px;
+.screenings {
+  margin-top: 100px;
 }
 #screening {
   display: inline;
   margin-right: 20px;
 }
-.btn-secondary {
+.btn-screening {
+  margin-top: 30px;
   background-color: darkorange;
   border-color: darkorange;
 }
-.btn-secondary:hover {
+.btn-screening:hover {
   background-color: orangered;
   border-color: orangered;
 }
-.btn-secondary:active {
+.btn-screening:active {
   background-color: red !important;
   border-color: red !important;
 }

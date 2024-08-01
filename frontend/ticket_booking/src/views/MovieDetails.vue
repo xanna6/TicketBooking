@@ -3,7 +3,7 @@
     <button class="btn btn-outline-dark btn-back" type="submit"><i class="bi bi-chevron-left"></i> Back</button>
   </a>
   <div v-if="movie" class="container">
-    <div class="shadow-sm p-3 mb-5 bg-white rounded">
+    <div class="shadow-sm p-4 mb-4 bg-white rounded">
       <h2>{{ movie.title }}</h2>
       <div class="row">
         <div class="col-6 movie-poster">
@@ -12,6 +12,12 @@
         <div class="col-6">
           <p>{{ movie.description }}</p>
         </div>
+      </div>
+    </div>
+    <div id="screenings">
+      <h4>Screenings</h4>
+      <div id="screening" v-for="screening in movie.screenings" v-bind:key="screening.hall_screening_time.id">
+        <button class="btn btn-secondary btn-screening">{{ screening.hall_screening_time.time }}</button>
       </div>
     </div>
   </div>
