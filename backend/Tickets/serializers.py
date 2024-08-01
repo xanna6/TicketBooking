@@ -1,4 +1,6 @@
-from django.urls import reverse
+from datetime import date, datetime
+
+import pytz
 from rest_framework import serializers
 
 from Tickets.models import User, Movie, Hall, HallScreeningTime, Screening
@@ -32,6 +34,11 @@ class ScreeningSerializer(serializers.ModelSerializer):
         fields = ['hall_screening_time']
 
 
+def get_local_time():
+    local_tz = pytz.timezone('Europe/Warsaw')
+    return datetime.now(local_tz).time()
+
+
 class MovieSerializer(serializers.ModelSerializer):
     screenings = serializers.SerializerMethodField()
 
@@ -40,5 +47,26 @@ class MovieSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'image_path', 'date_added', 'screenings']
 
     def get_screenings(self, obj):
-        screenings = Screening.objects.filter(movie=obj)
+        request = self.context.get('request')
+        date_param = request.query_params.get('date')
+        current_date = datetime.now().date()
+        current_time = get_local_time()
+
+        if date_param:
+            filter_date = date.fromisoformat(date_param)
+        else:
+            filter_date = current_date
+
+        if filter_date == current_date:
+            screenings = Screening.objects.filter(
+                movie=obj,
+                hall_screening_time__date=filter_date,
+                hall_screening_time__time__gt=current_time
+            )
+        else:
+            screenings = Screening.objects.filter(
+                movie=obj,
+                hall_screening_time__date=filter_date
+            )
+
         return ScreeningSerializer(screenings, many=True).data
