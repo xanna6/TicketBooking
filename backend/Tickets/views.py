@@ -1,11 +1,12 @@
 from datetime import date, datetime
 
 import pytz
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from Tickets.models import User, Movie, Screening
-from Tickets.serializers import UserSerializer, MovieSerializer
+from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -56,3 +57,34 @@ class MovieViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class MovieDetailsViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        date_param = self.request.query_params.get('date')
+        current_date = datetime.now().date()
+        current_time = get_local_time()
+        filter_date = date.fromisoformat(date_param)
+
+        movie = get_object_or_404(Movie, pk=kwargs['pk'])
+
+        if filter_date == current_date:
+            screenings = Screening.objects.filter(
+                movie=movie,
+                hall_screening_time__date=filter_date,
+                hall_screening_time__time__gt=current_time
+            )
+        else:
+            screenings = Screening.objects.filter(
+                movie=movie,
+                hall_screening_time__date=filter_date
+            )
+
+        serializer = MovieSerializer(movie, context={'request': request})
+        data = serializer.data
+        data['screenings'] = ScreeningSerializer(screenings, many=True).data
+
+        return Response(data)
