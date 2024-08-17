@@ -88,3 +88,8 @@ class MovieDetailsViewSet(viewsets.ModelViewSet):
         data['screenings'] = ScreeningSerializer(screenings, many=True).data
 
         return Response(data)
+
+
+class ScreeningViewSet(viewsets.ModelViewSet):
+    queryset = Screening.objects.all()
+    serializer_class = ScreeningSerializer

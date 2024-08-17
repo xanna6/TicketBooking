@@ -15,15 +15,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class HallSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Hall
-        fields = '__all__'
+        fields = ['id', 'name', 'rows', 'seats_in_row']
 
 
 class HallScreeningTimeSerializer(serializers.ModelSerializer):
     time = serializers.TimeField(format='%H:%M')
+    hall = HallSerializer()
 
     class Meta:
         model = HallScreeningTime
-        fields = ['id', 'date', 'time']
+        fields = ['id', 'date', 'time', 'hall']
 
 
 class ScreeningSerializer(serializers.ModelSerializer):
@@ -31,7 +32,7 @@ class ScreeningSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Screening
-        fields = ['hall_screening_time']
+        fields = ['id', 'hall_screening_time']
 
 
 def get_local_time():
