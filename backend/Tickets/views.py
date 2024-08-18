@@ -40,12 +40,12 @@ class MovieViewSet(viewsets.ModelViewSet):
 
         if filter_date == current_date:
             screenings = Screening.objects.filter(
-                hall_screening_time__date=filter_date,
-                hall_screening_time__time__gt=current_time
+                date=filter_date,
+                time__gt=current_time
             )
         else:
             screenings = Screening.objects.filter(
-                hall_screening_time__date=filter_date
+                date=filter_date
             )
 
         movie_ids = screenings.values_list('movie_id', flat=True)
@@ -74,13 +74,13 @@ class MovieDetailsViewSet(viewsets.ModelViewSet):
         if filter_date == current_date:
             screenings = Screening.objects.filter(
                 movie=movie,
-                hall_screening_time__date=filter_date,
-                hall_screening_time__time__gt=current_time
+                date=filter_date,
+                time__gt=current_time
             )
         else:
             screenings = Screening.objects.filter(
                 movie=movie,
-                hall_screening_time__date=filter_date
+                date=filter_date
             )
 
         serializer = MovieSerializer(movie, context={'request': request})

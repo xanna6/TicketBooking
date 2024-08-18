@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 
 from django.db import models
 
@@ -29,14 +30,9 @@ class Hall(models.Model):
     seats_in_row = models.IntegerField(blank=True, null=True)
 
 
-class HallScreeningTime(models.Model):
-    id = models.IntegerField(primary_key=True)
-    hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-
-
 class Screening(models.Model):
     id = models.IntegerField(primary_key=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    hall_screening_time = models.ForeignKey(HallScreeningTime, on_delete=models.CASCADE)
+    hall = models.ForeignKey(Hall, on_delete=models.CASCADE, blank=True, null=True)
+    date = models.DateField(default=datetime.now)
+    time = models.TimeField(default=datetime.now)

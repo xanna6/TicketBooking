@@ -24,8 +24,8 @@
       </div>
       <div style="clear: both">
       </div>
-      <div id="screening" v-for="screening in movie.screenings" v-bind:key="screening.hall_screening_time.id">
-        <button class="btn btn-secondary btn-screening">{{ screening.hall_screening_time.time }}</button>
+      <div id="screening" v-for="screening in movie.screenings" v-bind:key="screening.id">
+        <button class="btn btn-secondary btn-screening">{{ screening.time }}</button>
       </div>
     </div>
   </div>

@@ -3,7 +3,7 @@ from datetime import date, datetime
 import pytz
 from rest_framework import serializers
 
-from Tickets.models import User, Movie, Hall, HallScreeningTime, Screening
+from Tickets.models import User, Movie, Hall, Screening
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,21 +18,13 @@ class HallSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'name', 'rows', 'seats_in_row']
 
 
-class HallScreeningTimeSerializer(serializers.ModelSerializer):
+class ScreeningSerializer(serializers.ModelSerializer):
     time = serializers.TimeField(format='%H:%M')
     hall = HallSerializer()
 
     class Meta:
-        model = HallScreeningTime
-        fields = ['id', 'date', 'time', 'hall']
-
-
-class ScreeningSerializer(serializers.ModelSerializer):
-    hall_screening_time = HallScreeningTimeSerializer()
-
-    class Meta:
         model = Screening
-        fields = ['id', 'hall_screening_time']
+        fields = ['id', 'hall', 'date', 'time']
 
 
 def get_local_time():
@@ -61,13 +53,13 @@ class MovieSerializer(serializers.ModelSerializer):
         if filter_date == current_date:
             screenings = Screening.objects.filter(
                 movie=obj,
-                hall_screening_time__date=filter_date,
-                hall_screening_time__time__gt=current_time
+                date=filter_date,
+                time__gt=current_time
             )
         else:
             screenings = Screening.objects.filter(
                 movie=obj,
-                hall_screening_time__date=filter_date
+                date=filter_date
             )
 
         return ScreeningSerializer(screenings, many=True).data
