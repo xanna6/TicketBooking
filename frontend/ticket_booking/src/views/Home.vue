@@ -20,7 +20,10 @@
           </div>
           <div class="screenings">
             <div id="screening" v-for="screening in movie.screenings" v-bind:key="screening.id">
-              <button class="btn btn-secondary btn-screening">{{ screening.time }}</button>
+              <router-link :to="{ name: 'SelectSeats', query: { id: screening.id } }">
+                <button class="btn btn-secondary btn-screening">{{ screening.time }}</button>
+              </router-link>
+
             </div>
           </div>
         </div>

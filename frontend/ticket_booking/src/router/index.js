@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import MovieDetails from '../views/MovieDetails.vue';
+import SelectSeats from '../views/SelectSeats.vue';
 
 const routes = [
   {
@@ -13,6 +14,12 @@ const routes = [
     name: 'MovieDetails',
     component: MovieDetails,
     props: true
+  },
+  {
+    path: '/book/select-seats/',
+    name: 'SelectSeats',
+    component: SelectSeats,
+    props: route => ({ id: route.query.id })
   }
 ];
 
