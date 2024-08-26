@@ -64,22 +64,43 @@ export default {
     });
 
     const toggleSeat = (rowIndex, seatIndex) => {
-      const seat = { row: rowIndex, seat: seatIndex };
+      const seat = { row: rowIndex, seat_in_row: seatIndex };
 
       const seatIndexInArray = selectedSeats.value.findIndex(
-        (s) => s.row === rowIndex && s.seat === seatIndex
+        (s) => s.row === rowIndex && s.seat_in_row === seatIndex
       );
 
       if (seatIndexInArray > -1) {
         selectedSeats.value.splice(seatIndexInArray, 1);
       } else {
-        selectedSeats.value.push(seat);
+        bookSeat(seat);
+      }
+    };
+
+    const bookSeat = async (seat) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/ticket/?screening_id=${props.id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(seat)
+        });
+
+        if (!response.ok) {
+          throw new Error(`Couldn't book a seat - status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        selectedSeats.value.push(data);
+      } catch (error) {
+        console.error(error);
       }
     };
 
     const isSelected = (rowIndex, seatIndex) => {
       return selectedSeats.value.some(
-        (s) => s.row === rowIndex && s.seat === seatIndex
+        (s) => s.row === rowIndex && s.seat_in_row === seatIndex
       );
     };
 

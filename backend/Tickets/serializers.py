@@ -3,7 +3,7 @@ from datetime import date, datetime
 import pytz
 from rest_framework import serializers
 
-from Tickets.models import User, Movie, Hall, Screening
+from Tickets.models import User, Movie, Hall, Screening, Ticket
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -63,3 +63,9 @@ class MovieSerializer(serializers.ModelSerializer):
             )
 
         return ScreeningSerializer(screenings, many=True).data
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ['id', 'screening', 'row', 'seat_in_row']
