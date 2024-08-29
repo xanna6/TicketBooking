@@ -48,7 +48,7 @@ export default {
   },
   setup(props) {
     const screening = ref(null);
-    const selectedSeats = ref([]);
+    let selectedSeats = ref([]);
 
     const fetchScreeningDetails = async () => {
       try {
@@ -71,7 +71,7 @@ export default {
       );
 
       if (seatIndexInArray > -1) {
-        selectedSeats.value.splice(seatIndexInArray, 1);
+        cancelSeat(selectedSeats.value.at(seatIndexInArray).id)
       } else {
         bookSeat(seat);
       }
@@ -93,6 +93,22 @@ export default {
 
         const data = await response.json();
         selectedSeats.value.push(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const cancelSeat = async (seat_id) => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/ticket/${seat_id}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) {
+          throw new Error(`Couldn't cancel a ticket - status: ${response.status}`);
+        }
+
+        selectedSeats.value = selectedSeats.value.filter(seat => seat.id !== seat_id);
       } catch (error) {
         console.error(error);
       }
