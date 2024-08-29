@@ -1,4 +1,6 @@
 import base64
+from datetime import datetime
+from django.utils import timezone
 
 from django.db import models
 
@@ -29,14 +31,21 @@ class Hall(models.Model):
     seats_in_row = models.IntegerField(blank=True, null=True)
 
 
-class HallScreeningTime(models.Model):
-    id = models.IntegerField(primary_key=True)
-    hall = models.ForeignKey(Hall, on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-
-
 class Screening(models.Model):
     id = models.IntegerField(primary_key=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    hall_screening_time = models.ForeignKey(HallScreeningTime, on_delete=models.CASCADE)
+    hall = models.ForeignKey(Hall, on_delete=models.CASCADE, blank=True, null=True)
+    date = models.DateField(default=datetime.now)
+    time = models.TimeField(default=datetime.now)
+
+
+class Ticket(models.Model):
+    id = models.AutoField(primary_key=True)
+    screening = models.ForeignKey(Screening, on_delete=models.CASCADE)
+    row = models.IntegerField(blank=True, null=True)
+    seat_in_row = models.IntegerField(blank=True, null=True)
+    booked = models.BooleanField(default=True)
+    booked_timestamp = models.DateTimeField(default=timezone.now)
+    sold = models.BooleanField(default=False)
+    sold_timestamp = models.DateTimeField(blank=True, null=True)
+

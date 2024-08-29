@@ -2,11 +2,12 @@ from datetime import date, datetime
 
 import pytz
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from Tickets.models import User, Movie, Screening
-from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer
+from Tickets.models import User, Movie, Screening, Ticket
+from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer, TicketSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -40,12 +41,12 @@ class MovieViewSet(viewsets.ModelViewSet):
 
         if filter_date == current_date:
             screenings = Screening.objects.filter(
-                hall_screening_time__date=filter_date,
-                hall_screening_time__time__gt=current_time
+                date=filter_date,
+                time__gt=current_time
             )
         else:
             screenings = Screening.objects.filter(
-                hall_screening_time__date=filter_date
+                date=filter_date
             )
 
         movie_ids = screenings.values_list('movie_id', flat=True)
@@ -74,13 +75,13 @@ class MovieDetailsViewSet(viewsets.ModelViewSet):
         if filter_date == current_date:
             screenings = Screening.objects.filter(
                 movie=movie,
-                hall_screening_time__date=filter_date,
-                hall_screening_time__time__gt=current_time
+                date=filter_date,
+                time__gt=current_time
             )
         else:
             screenings = Screening.objects.filter(
                 movie=movie,
-                hall_screening_time__date=filter_date
+                date=filter_date
             )
 
         serializer = MovieSerializer(movie, context={'request': request})
@@ -88,3 +89,32 @@ class MovieDetailsViewSet(viewsets.ModelViewSet):
         data['screenings'] = ScreeningSerializer(screenings, many=True).data
 
         return Response(data)
+
+
+class ScreeningViewSet(viewsets.ModelViewSet):
+    queryset = Screening.objects.all()
+    serializer_class = ScreeningSerializer
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def create(self, request, *args, **kwargs):
+        screening_id = self.request.query_params.get('screening_id')
+
+        try:
+            screening = Screening.objects.get(id=screening_id)
+        except Screening.DoesNotExist:
+            raise ValidationError({"screening": "Screening not found."})
+
+        data = request.data
+        data['screening'] = screening.id
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
