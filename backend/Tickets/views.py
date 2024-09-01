@@ -6,8 +6,9 @@ from rest_framework import viewsets, status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from Tickets.models import User, Movie, Screening, Ticket
-from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer, TicketSerializer
+from Tickets.models import User, Movie, Screening, Ticket, Customer
+from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer, TicketSerializer, \
+    CustomerSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -118,3 +119,8 @@ class TicketViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer

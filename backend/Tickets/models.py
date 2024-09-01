@@ -49,3 +49,10 @@ class Ticket(models.Model):
     sold = models.BooleanField(default=False)
     sold_timestamp = models.DateTimeField(blank=True, null=True)
 
+
+class Customer(models.Model):
+    id = models.AutoField(primary_key=True)
+    firstname = models.CharField(max_length=80)
+    lastname = models.CharField(max_length=80)
+    email = models.CharField(max_length=80)
+    phone = models.CharField(max_length=20)
