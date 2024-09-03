@@ -39,9 +39,18 @@ class Screening(models.Model):
     time = models.TimeField(default=datetime.now)
 
 
+class Customer(models.Model):
+    id = models.AutoField(primary_key=True)
+    firstname = models.CharField(max_length=80)
+    lastname = models.CharField(max_length=80)
+    email = models.CharField(max_length=80)
+    phone = models.CharField(max_length=20)
+
+
 class Ticket(models.Model):
     id = models.AutoField(primary_key=True)
     screening = models.ForeignKey(Screening, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True)
     row = models.IntegerField(blank=True, null=True)
     seat_in_row = models.IntegerField(blank=True, null=True)
     booked = models.BooleanField(default=True)
@@ -49,10 +58,3 @@ class Ticket(models.Model):
     sold = models.BooleanField(default=False)
     sold_timestamp = models.DateTimeField(blank=True, null=True)
 
-
-class Customer(models.Model):
-    id = models.AutoField(primary_key=True)
-    firstname = models.CharField(max_length=80)
-    lastname = models.CharField(max_length=80)
-    email = models.CharField(max_length=80)
-    phone = models.CharField(max_length=20)

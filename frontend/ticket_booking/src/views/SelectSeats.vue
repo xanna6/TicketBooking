@@ -82,7 +82,7 @@ export default {
 
     const bookSeat = async (seat) => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/ticket/?screening_id=${props.id}`, {
+        const response = await fetch(`http://127.0.0.1:8000/tickets/?screening_id=${props.id}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -103,7 +103,7 @@ export default {
 
     const cancelSeat = async (seat_id) => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/ticket/${seat_id}`, {
+        const response = await fetch(`http://127.0.0.1:8000/tickets/${seat_id}`, {
           method: 'DELETE'
         });
 

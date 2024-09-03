@@ -68,7 +68,8 @@ class MovieSerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = ['id', 'screening', 'row', 'seat_in_row']
+        fields = ['id', 'screening', 'row', 'seat_in_row',
+                  'booked', 'booked_timestamp', 'sold', 'sold_timestamp', 'customer']
 
 
 class CustomerSerializer(serializers.ModelSerializer):

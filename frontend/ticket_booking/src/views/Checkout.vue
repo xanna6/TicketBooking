@@ -55,9 +55,10 @@ export default {
       phone: ''
     });
 
+    let customerId = -1;
+
     async function submitForm() {
       try {
-        console.log(JSON.stringify(form.value))
         const response = await fetch('http://127.0.0.1:8000/customer/', {
           method: 'POST',
           headers: {
@@ -71,8 +72,26 @@ export default {
         }
 
         const result = await response.json();
-        console.log('Form submitted successfully:', result);
+        customerId = result.id
+      } catch (error) {
+        console.error('Error submitting form:', error);
+      }
 
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/tickets/submit/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({"customer_id": customerId, "ids": ticketIds})
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to submit form');
+        }
+
+        const result = await response.json();
+        console.log(result)
       } catch (error) {
         console.error('Error submitting form:', error);
       }
