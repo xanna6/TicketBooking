@@ -8,9 +8,11 @@
     <div v-for="rowIndex in screening.hall.rows" :key="rowIndex" class="row">
       <span class="rowIndex">{{ rowIndex }}</span>
       <span v-for="seatIndex in screening.hall.seats_in_row" :key="seatIndex" class="seat">
-        <button class="seatBtn" @click="toggleSeat(rowIndex, seatIndex)">
-          <i :class="{'bi bi-square-fill fs-4 seat-selected': isSelected(rowIndex, seatIndex),
-           'bi bi-square-fill fs-4 seat-available': !isSelected(rowIndex, seatIndex)}"></i>
+        <button class="seatBtn" @click="toggleSeat(rowIndex, seatIndex)" :disabled="isOccupied(rowIndex, seatIndex)">
+          <i class="bi bi-square-fill fs-4" :class="{
+            'seat-selected': isSelected(rowIndex, seatIndex),
+            'seat-occupied': isOccupied(rowIndex, seatIndex),
+            'seat-available': !isSelected(rowIndex, seatIndex)}"></i>
         </button>
       </span>
     </div>
@@ -52,6 +54,7 @@ export default {
   setup(props) {
     const screening = ref(null);
     let selectedSeats = ref([]);
+    const occupiedSeats = ref([]);
 
     const fetchScreeningDetails = async () => {
       try {
@@ -62,8 +65,19 @@ export default {
       }
     };
 
+    const fetchOccupiedSeats = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/tickets/occupied-seats?screening_id=${props.id}`);
+        occupiedSeats.value = await response.json();
+        console.log(occupiedSeats)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
     onMounted(() => {
       fetchScreeningDetails();
+      fetchOccupiedSeats();
     });
 
     const toggleSeat = (rowIndex, seatIndex) => {
@@ -123,6 +137,12 @@ export default {
       );
     };
 
+    const isOccupied = (rowIndex, seatIndex) => {
+      return occupiedSeats.value.some(
+        (s) => s.row === rowIndex && s.seat_in_row === seatIndex
+      );
+    };
+
     const seatIds = computed(() => {
       return selectedSeats.value.map(seat => seat.id).join(',');
     });
@@ -131,6 +151,7 @@ export default {
       screening,
       toggleSeat,
       isSelected,
+      isOccupied,
       selectedSeats,
       seatIds
     };

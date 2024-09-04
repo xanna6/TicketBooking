@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 import pytz
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -145,6 +146,13 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"detail": "Tickets updated successfully."}, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        screening_id = self.request.query_params.get('screening_id')
+        occupied_seats = Ticket.objects.filter(Q(screening_id=screening_id) & Q(booked=True) | Q(sold=True))
+        serializer = self.get_serializer(occupied_seats, many=True)
+
+        return Response(serializer.data)
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
