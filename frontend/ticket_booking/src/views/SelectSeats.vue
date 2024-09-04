@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="button-container">
-      <router-link v-if="seatIds.length" :to="{ name: 'Checkout', query: { ids: seatIds } }">
+      <router-link v-if="seatIds.length" :to="{ name: 'Summary', query: { ids: seatIds } }">
         <button class="btn btn-success" :disabled="seatIds.length === 0">Next</button>
       </router-link>
       <button v-else class="btn btn-success" disabled>Next</button>
