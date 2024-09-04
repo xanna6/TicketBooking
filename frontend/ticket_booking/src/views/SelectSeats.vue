@@ -26,7 +26,10 @@
       </div>
     </div>
     <div class="button-container">
-      <button class="btn btn-success">Next</button>
+      <router-link v-if="seatIds.length" :to="{ name: 'Summary', query: { ids: seatIds } }">
+        <button class="btn btn-success" :disabled="seatIds.length === 0">Next</button>
+      </router-link>
+      <button v-else class="btn btn-success" disabled>Next</button>
       <a @click="$router.go(-1)">
         <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-chevron-left"></i> Back</button>
       </a>
@@ -36,7 +39,7 @@
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 
 export default {
   name: "SelectSeats",
@@ -79,7 +82,7 @@ export default {
 
     const bookSeat = async (seat) => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/ticket/?screening_id=${props.id}`, {
+        const response = await fetch(`http://127.0.0.1:8000/tickets/?screening_id=${props.id}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -100,7 +103,7 @@ export default {
 
     const cancelSeat = async (seat_id) => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/ticket/${seat_id}`, {
+        const response = await fetch(`http://127.0.0.1:8000/tickets/${seat_id}`, {
           method: 'DELETE'
         });
 
@@ -120,11 +123,16 @@ export default {
       );
     };
 
+    const seatIds = computed(() => {
+      return selectedSeats.value.map(seat => seat.id).join(',');
+    });
+
     return {
       screening,
       toggleSeat,
       isSelected,
-      selectedSeats
+      selectedSeats,
+      seatIds
     };
   }
 }

@@ -1,13 +1,16 @@
 from datetime import date, datetime
 
 import pytz
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from Tickets.models import User, Movie, Screening, Ticket
-from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer, TicketSerializer
+from Tickets.models import User, Movie, Screening, Ticket, Customer
+from Tickets.serializers import UserSerializer, MovieSerializer, ScreeningSerializer, TicketSerializer, \
+    CustomerSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -118,3 +121,32 @@ class TicketViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(detail=False, methods=['patch'], url_path='submit')
+    def patch_multiple(self, request):
+        data = request.data
+        ticketIds = data.get('ids')
+
+        try:
+            with transaction.atomic():
+                for ticketId in ticketIds:
+                    ticket = Ticket.objects.get(pk=ticketId)
+                    ticket_new_data = {
+                        "customer": data.get('customer_id'),
+                        "sold": True,
+                        "sold_timestamp": datetime.now().isoformat()
+                    }
+                    serializer = self.get_serializer(ticket, data=ticket_new_data, partial=True)
+                    serializer.is_valid(raise_exception=True)
+                    serializer.save()
+        except Ticket.DoesNotExist as e:
+            return Response({"detail": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"detail": "Tickets updated successfully."}, status=status.HTTP_200_OK)
+
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
