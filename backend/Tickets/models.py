@@ -11,7 +11,7 @@ class User(models.Model):
 
 
 class Movie(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     image_path = models.ImageField(upload_to='uploads/', blank=True, null=True)
@@ -25,14 +25,14 @@ class Movie(models.Model):
 
 
 class Hall(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=80)
     rows = models.IntegerField(blank=True, null=True)
     seats_in_row = models.IntegerField(blank=True, null=True)
 
 
 class Screening(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     hall = models.ForeignKey(Hall, on_delete=models.CASCADE, blank=True, null=True)
     date = models.DateField(default=datetime.now)
