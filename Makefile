@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL := /bin/bash
 
-PYTHON=python3
+PYTHON=python
 PIP=pip
 BACKEND_DIR=backend/
 FRONTEND_DIR=frontend/ticket_booking/
@@ -9,7 +9,13 @@ DJANGO_MANAGE=manage.py
 DB_NAME=ticket_booking
 DB_USER=postgres
 
-backend-setup: ## Install backend dependencies
+check-venv: ## Check whether virtual environment is activated
+	@if [ -z "$$VIRTUAL_ENV" ]; then \
+  		echo "Error: Virtual environment is not activated"; \
+  		exit 1; \
+  	fi
+
+backend-setup: check-venv ## Install backend dependencies
 	@$(PIP) install -r requirements.txt
 
 frontend-setup: ## Install frontend dependencies
@@ -28,19 +34,19 @@ database-setup: ## Create postgreSQL database\, migrate tables and add sample da
 
 setup: backend-setup frontend-setup database-setup ## Setup backend, frontend and database
 
-run-backend: ## Run backend server
+run-backend: check-venv ## Run backend server
 	@cd $(BACKEND_DIR) && $(PYTHON) $(DJANGO_MANAGE) runserver
 
 run-frontend: ## Run frontend server
 	@cd $(FRONTEND_DIR) && npm run serve
 
-migrate: ## Make Django migrations
+migrate: check-venv ## Make Django migrations
 	@cd $(BACKEND_DIR) && $(PYTHON) $(DJANGO_MANAGE) migrate
 
-load-sample-data: ## Add sample data to database
+load-sample-data: check-venv ## Add sample data to database
 	@cd $(BACKEND_DIR) && $(PYTHON) $(DJANGO_MANAGE) load_sample_data
 
-update: ## Install missing backend dependencies after project changes
+update: check-venv ## Install missing backend dependencies after project changes
 	@pip install -U -r requirements.pip
 
 help:
