@@ -8,6 +8,7 @@ FRONTEND_DIR=frontend/ticket_booking/
 DJANGO_MANAGE=manage.py
 DB_NAME=ticket_booking
 DB_USER=postgres
+DEMO=true
 
 backend-setup: ## Install backend dependencies
 	@$(PIP) install -r requirements.txt
@@ -15,14 +16,18 @@ backend-setup: ## Install backend dependencies
 frontend-setup: ## Install frontend dependencies
 	@cd $(FRONTEND_DIR) && npm install
 
-database-setup: ## Create postgreSQL database and migrate tables
+database-setup: ## Create postgreSQL database\, migrate tables and add sample data
 	@echo "Create a database named $(DB_NAME) for user $(DB_USER)"
 	@psql -h 127.0.0.1 -U $(DB_USER) -c "CREATE DATABASE $(DB_NAME);" 2>/dev/null
 	@if psql -h 127.0.0.1 -U $(DB_USER) -lqt | cut -d \| -f 1 | grep -qw $(DB_NAME) ; then \
 		$(MAKE) migrate; \
+		@if $(DEMO) then \
+			$(MAKE) load-sample-data; \
+		fi
 	else \
 		@echo "Failed to create database, skipping migrations"; \
 	fi
+
 
 setup: backend-setup frontend-setup database-setup ## Setup backend, frontend and database
 
@@ -34,6 +39,9 @@ run-frontend: ## Run frontend server
 
 migrate: ## Make Django migrations
 	@cd $(BACKEND_DIR) && $(PYTHON) $(DJANGO_MANAGE) migrate
+
+load-sample-data: ## Add sample data to database
+	@cd $(BACKEND_DIR) && $(PYTHON) $(DJANGO_MANAGE) load_sample_data
 
 update: ## Install missing backend dependencies after project changes
 	@pip install -U -r requirements.pip
