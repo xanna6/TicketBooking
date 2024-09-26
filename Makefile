@@ -8,7 +8,6 @@ FRONTEND_DIR=frontend/ticket_booking/
 DJANGO_MANAGE=manage.py
 DB_NAME=ticket_booking
 DB_USER=postgres
-DEMO=true
 
 backend-setup: ## Install backend dependencies
 	@$(PIP) install -r requirements.txt
@@ -21,9 +20,7 @@ database-setup: ## Create postgreSQL database\, migrate tables and add sample da
 	@psql -h 127.0.0.1 -U $(DB_USER) -c "CREATE DATABASE $(DB_NAME);" 2>/dev/null
 	@if psql -h 127.0.0.1 -U $(DB_USER) -lqt | cut -d \| -f 1 | grep -qw $(DB_NAME) ; then \
 		$(MAKE) migrate; \
-		@if $(DEMO) then \
-			$(MAKE) load-sample-data; \
-		fi
+		$(MAKE) load-sample-data; \
 	else \
 		@echo "Failed to create database, skipping migrations"; \
 	fi
