@@ -10,14 +10,6 @@
           <input v-model="searchQuery" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
-        <ul class="navbar-nav ml-auto me-3">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Sign in</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Register</a>
-          </li>
-        </ul>
       </div>
     </nav>
 
