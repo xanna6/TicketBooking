@@ -4,10 +4,19 @@
 
 To run project you should have installed:
 
-- Python
-- Node.js
+- Python >= 3.8
+- Node.js >= 12.0.0
+- npm >= 5.0.0
 - PostgreSQL server
 
-To configure and run project you can use make command with targets from Makefile.
+To build and run project virtual environment should be set up.
+Then you can use make command with targets from Makefile:
+```
+make setup
+make run-backend
+make run-frontend
+```
+Application will be running on http://localhost:8080/
+
 
 
