@@ -4,6 +4,8 @@ import MovieDetails from '../views/MovieDetails.vue';
 import SelectSeats from '../views/SelectSeats.vue';
 import Checkout from '../views/Checkout.vue';
 import Summary from "@/views/Summary.vue";
+import Register from "@/views/Register.vue";
+import Login from "@/views/Login.vue";
 
 const routes = [
   {
@@ -33,6 +35,16 @@ const routes = [
     path: '/checkout/',
     name: 'Checkout',
     component: Checkout
+  },
+    {
+    path: '/register/',
+    name: 'Register',
+    component: Register
+  },
+    {
+    path: '/login/',
+    name: 'Login',
+    component: Login
   }
 ];
 

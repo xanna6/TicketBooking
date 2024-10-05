@@ -10,6 +10,18 @@
           <input v-model="searchQuery" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <ul class="navbar-nav ml-auto me-3">
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'Register'}">
+              <span>Sign up</span>
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'Login'}">
+              <span>Sign in</span>
+            </router-link>
+          </li>
+        </ul>
       </div>
     </nav>
 
@@ -60,3 +72,8 @@ export default {
 };
 </script>
 
+<style scoped>
+.loginBtn {
+  text-decoration: none;
+}
+</style>
